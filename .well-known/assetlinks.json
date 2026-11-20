@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "gr.kym.app",
+      "sha256_cert_fingerprints": [
+        "5D:99:89:F2:15:4D:F4:96:8D:45:4D:7A:D6:B8:F5:0D:FC:81:EA:2E:00:23:77:C9:21:CE:F4:61:4B:5D:E6:F4"
+      ]
+    }
+  }
+]

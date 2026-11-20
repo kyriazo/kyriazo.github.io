@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex">
+  <title>Back to Kym</title>
+  <style>
+    :root { color-scheme: light dark; --bg:#F6F7F9; --fg:#16181D; --muted:#5B616E; --accent:#2F6B4F; --card:#FFFFFF; }
+    @media (prefers-color-scheme: dark) { :root { --bg:#0F1115; --fg:#ECEEF2; --muted:#A3A9B6; --accent:#7CC9A0; --card:#181B21; } }
+    body { margin:0; font:16px/1.5 system-ui, sans-serif; background:var(--bg); color:var(--fg); }
+    main { max-width:28rem; margin:0 auto; padding:32px 16px; }
+    .card { background:var(--card); border-radius:16px; padding:20px; }
+    a.button, button { display:block; width:100%; min-height:48px; box-sizing:border-box; border:0; border-radius:12px;
+      font:600 16px system-ui, sans-serif; text-align:center; text-decoration:none; padding:13px 16px; margin-top:12px; cursor:pointer; }
+    a.button { background:var(--accent); color:#fff; }
+    button { background:transparent; color:var(--accent); border:1px solid currentColor; }
+    p.small { color:var(--muted); font-size:14px; }
+    code { display:block; word-break:break-all; font-size:13px; background:rgba(127,127,127,.12); padding:10px; border-radius:8px; margin-top:8px; }
+  </style>
+</head>
+<body>
+<main>
+  <div class="card">
+    <h1 id="title" style="font-size:22px;margin:0 0 8px">Back to Kym</h1>
+    <p id="lead">You are signed in at the bank. Open Kym to finish connecting.</p>
+    <a id="open" class="button" href="#">Open Kym</a>
+    <p class="small">Kym did not open? Copy this address and paste it in Kym: Bank connections → “Paste the address”.</p>
+    <code id="url"></code>
+    <button id="copy" type="button">Copy address</button>
+  </div>
+</main>
+<script>
+  (function () {
+    var full = window.location.href;
+    var query = window.location.search || "";
+    var params = new URLSearchParams(query);
+    document.getElementById("url").textContent = full;
+    if (params.get("error")) {
+      document.getElementById("title").textContent = "The bank did not give access";
+      document.getElementById("lead").textContent = (params.get("error_description") || params.get("error")) + ". Open Kym to try again.";
+    }
+    // Custom-scheme fallback (manifest: kym://eb-callback). Release package; change for a debug build.
+    document.getElementById("open").href = "intent://eb-callback" + query + "#Intent;scheme=kym;package=gr.kym.app;end";
+    document.getElementById("copy").addEventListener("click", function () {
+      var done = function () { document.getElementById("copy").textContent = "Copied"; };
+      if (navigator.clipboard) { navigator.clipboard.writeText(full).then(done, function () {}); }
+      else { var r = document.createRange(); r.selectNodeContents(document.getElementById("url"));
+             var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); document.execCommand("copy"); done(); }
+    });
+  })();
+</script>
+</body>
+</html>
